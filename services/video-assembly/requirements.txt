@@ -1,0 +1,9 @@
+fastapi==0.115.0
+uvicorn==0.30.6
+shotstack-sdk==0.2.8
+pydantic==2.9.2
+pydantic-settings==2.5.2
+pytest==8.3.3
+pydub==0.25.1
+requests==2.31.0
+cloudinary==1.36.0

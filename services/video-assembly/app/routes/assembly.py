@@ -31,4 +31,3 @@ async def assemble_video(request: VideoRequest):
         return {"video_id": video_id, "video_url": video_url, "duration": duration}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-

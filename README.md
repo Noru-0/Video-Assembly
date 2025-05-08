@@ -128,3 +128,50 @@ Run unit tests with:
 pytest
 ```
 
+
+```
+API
+├─ README.md
+└─ services
+   └─ video-assembly
+      ├─ app
+      │  ├─ config
+      │  │  ├─ settings.py
+      │  │  ├─ __init__.py
+      │  │  └─ __pycache__
+      │  │     ├─ settings.cpython-312.pyc
+      │  │     ├─ settings.cpython-313.pyc
+      │  │     ├─ __init__.cpython-312.pyc
+      │  │     └─ __init__.cpython-313.pyc
+      │  ├─ main.py
+      │  ├─ routes
+      │  │  ├─ assembly.py
+      │  │  ├─ health.py
+      │  │  ├─ __init__.py
+      │  │  └─ __pycache__
+      │  │     ├─ assembly.cpython-312.pyc
+      │  │     ├─ health.cpython-312.pyc
+      │  │     └─ __init__.cpython-312.pyc
+      │  ├─ services
+      │  │  ├─ audio_utils.py
+      │  │  ├─ video_service.py
+      │  │  ├─ __init__.py
+      │  │  └─ __pycache__
+      │  │     ├─ audio_utils.cpython-312.pyc
+      │  │     ├─ video_service.cpython-312.pyc
+      │  │     └─ __init__.cpython-312.pyc
+      │  ├─ __init__.py
+      │  └─ __pycache__
+      │     ├─ main.cpython-312.pyc
+      │     ├─ __init__.cpython-312.pyc
+      │     └─ __init__.cpython-313.pyc
+      ├─ Procfile
+      ├─ requirements.txt
+      └─ tests
+         ├─ test_assembly.py
+         ├─ __init__.py
+         └─ __pycache__
+            ├─ test_assembly.cpython-312-pytest-8.3.3.pyc
+            └─ __init__.cpython-312.pyc
+
+```

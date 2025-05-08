@@ -2,6 +2,8 @@ import time
 import logging
 import requests
 import io
+import cloudinary
+import cloudinary.uploader
 
 from shotstack_sdk.configuration import Configuration
 from shotstack_sdk.api_client import ApiClient
@@ -15,7 +17,7 @@ from shotstack_sdk.model.soundtrack import Soundtrack
 from shotstack_sdk.model.output import Output
 from shotstack_sdk.model.edit import Edit
 from app.config.settings import Settings
-from app.services.audio_utils import mix_audio  
+from app.services.audio_utils import mix_audio
 from pydub import AudioSegment
 
 logging.basicConfig(level=logging.INFO)
@@ -28,6 +30,13 @@ clip_effects = [
 ]
 
 soundtrack_effects = ["fadeInFadeOut"]
+
+# Cấu hình Cloudinary
+cloudinary.config(
+    cloud_name=Settings().cloudinary_cloud_name,
+    api_key=Settings().cloudinary_api_key,
+    api_secret=Settings().cloudinary_api_secret
+)
 
 async def create_video(video_id: str, audio_url: str, visual_urls: list, effects: list, background_music_url: str = None):
     # Ép kiểu từ HttpUrl thành str
@@ -110,7 +119,22 @@ async def create_video(video_id: str, audio_url: str, visual_urls: list, effects
                 status = render_status['response']['status']
                 logger.info(f"Render status: {status}")
                 if status == "done":
-                    return render_status['response']['url'], audio_duration
+                    shotstack_url = render_status['response']['url']
+                    # Tải video từ Shotstack và tải lên Cloudinary
+                    video_response = requests.get(shotstack_url)
+                    if video_response.status_code != 200:
+                        raise Exception(f"Failed to download video from Shotstack: {video_response.status_code}")
+
+                    # Tải video lên Cloudinary
+                    cloudinary_response = cloudinary.uploader.upload(
+                        io.BytesIO(video_response.content),
+                        resource_type="video",
+                        folder="videos",  
+                        public_id=video_id,
+                        overwrite=True
+                    )
+                    cloudinary_url = cloudinary_response['secure_url']
+                    return cloudinary_url, audio_duration
                 if status == "failed":
                     raise Exception("Rendering failed")
 
@@ -119,4 +143,3 @@ async def create_video(video_id: str, audio_url: str, visual_urls: list, effects
     except Exception as e:
         logger.error(f"Render error: {str(e)}")
         raise
-    

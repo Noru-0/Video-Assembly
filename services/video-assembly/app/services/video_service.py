@@ -16,8 +16,9 @@ from shotstack_sdk.model.image_asset import ImageAsset
 from shotstack_sdk.model.soundtrack import Soundtrack
 from shotstack_sdk.model.output import Output
 from shotstack_sdk.model.edit import Edit
+from shotstack_sdk.model.transition import Transition
 from app.config.settings import Settings
-from app.services.audio_utils import mix_audio
+from app.services.audio_utils import mix_audio  
 from pydub import AudioSegment
 
 logging.basicConfig(level=logging.INFO)
@@ -28,8 +29,17 @@ clip_effects = [
     "slideLeft", "slideLeftSlow", "slideLeftFast", "slideRight", "slideRightSlow", "slideRightFast",
     "slideUp", "slideUpSlow", "slideUpFast", "slideDown", "slideDownSlow", "slideDownFast"
 ]
-
 soundtrack_effects = ["fadeInFadeOut"]
+transition_effects = [
+    "fade", "reveal", "wipeLeft", "wipeRight", "zoom", 
+    "slideLeft", "slideRight", "slideUp", "slideDown",
+    "carouselLeft", "carouselRight", "carouselUp", "carouselDown",
+    "shuffleTopRight", "shuffleRightTop",
+    "shuffleRightBottom", "shuffleBottomRight",
+    "shuffleBottomLeft", "shuffleLeftBottom", 
+    "shuffleLeftTop", "shuffleTopLeft", 
+]
+
 
 # Cấu hình Cloudinary
 cloudinary.config(
@@ -38,8 +48,8 @@ cloudinary.config(
     api_secret=Settings().cloudinary_api_secret
 )
 
-async def create_video(video_id: str, audio_url: str, visual_urls: list, effects: list, background_music_url: str = None):
-    # Ép kiểu từ HttpUrl thành str
+async def create_video(video_id: str, audio_url: str, visual_urls: list, effects: list, transitions: list, background_music_url: str = None):
+    # Convert HttpUrl to str
     audio_url = str(audio_url)
     background_music_url = str(background_music_url) if background_music_url else None
     visual_urls = [str(url) for url in visual_urls]
@@ -50,7 +60,7 @@ async def create_video(video_id: str, audio_url: str, visual_urls: list, effects
     configuration.host = str(settings.shotstack_api_host)
     configuration.api_key['DeveloperKey'] = str(settings.shotstack_api_key)
 
-    # Tải và xử lý audio chính
+    # Download and process main audio
     response = requests.get(audio_url)
     if response.status_code != 200:
         raise Exception(f"Failed to download audio: {response.status_code}")
@@ -73,19 +83,28 @@ async def create_video(video_id: str, audio_url: str, visual_urls: list, effects
 
         effect = effects[0] if effects and effects[0] in clip_effects else "zoomIn"
 
-        clip = Clip(
-            asset=asset,
-            start=start_time,
-            length=duration_per_visual,
-            effect=effect
-        )
+        # Prepare clip parameters
+        clip_params = {
+            "asset": asset,
+            "start": start_time,
+            "length": duration_per_visual,
+            "effect": effect
+        }
 
+        # Apply transition if specified and not the last clip
+        if i < len(visual_urls) - 1 and transitions:
+            transition_effect = transitions[i % len(transitions)]
+            if transition_effect in transition_effects:
+                clip_params["transition"] = Transition(**{"in": transition_effect})
+
+
+        clip = Clip(**clip_params)
         clips.append(clip)
 
     track = Track(clips=clips)
     timeline = Timeline(tracks=[track])
 
-    # Gộp audio và nhạc nền nếu cần
+    # Mix audio and background music if needed
     if audio_url and background_music_url:
         mixed_audio_url = mix_audio(audio_url, background_music_url)
         timeline.soundtrack = Soundtrack(
@@ -137,8 +156,6 @@ async def create_video(video_id: str, audio_url: str, visual_urls: list, effects
                     return cloudinary_url, audio_duration
                 if status == "failed":
                     raise Exception("Rendering failed")
-
-            raise TimeoutError("Rendering timed out")
 
     except Exception as e:
         logger.error(f"Render error: {str(e)}")

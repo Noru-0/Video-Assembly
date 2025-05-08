@@ -10,6 +10,7 @@ class VideoRequest(BaseModel):
     audio_url: HttpUrl
     visual_urls: List[HttpUrl]
     effects: Optional[List[str]] = ["fade"]
+    transitions: Optional[List[str]] = ["fade"]
     background_music_url: Optional[HttpUrl] = None
 
 class VideoResponse(BaseModel):
@@ -26,6 +27,7 @@ async def assemble_video(request: VideoRequest):
             request.audio_url,
             request.visual_urls,
             request.effects,
+            request.transitions,
             request.background_music_url
         )
         return {"video_id": video_id, "video_url": video_url, "duration": duration}

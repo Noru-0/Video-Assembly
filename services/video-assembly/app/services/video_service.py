@@ -4,6 +4,8 @@ import requests
 import io
 import cloudinary
 import cloudinary.uploader
+import tempfile
+import os
 
 from shotstack_sdk.configuration import Configuration
 from shotstack_sdk.api_client import ApiClient
@@ -48,9 +50,9 @@ cloudinary.config(
     api_secret=Settings().cloudinary_api_secret
 )
 
-async def create_video(video_id: str, audio_url: str, visual_urls: list, effects: list, transitions: list, background_music_url: str = None):
+async def create_video(video_id: str, audio_urls: list, visual_urls: list, effects: list, transitions: list, background_music_url: str = None):
     # Convert HttpUrl to str
-    audio_url = str(audio_url)
+    audio_urls = [str(url) for url in audio_urls]
     background_music_url = str(background_music_url) if background_music_url else None
     visual_urls = [str(url) for url in visual_urls]
 
@@ -60,15 +62,39 @@ async def create_video(video_id: str, audio_url: str, visual_urls: list, effects
     configuration.host = str(settings.shotstack_api_host)
     configuration.api_key['DeveloperKey'] = str(settings.shotstack_api_key)
 
-    # Download and process main audio
-    response = requests.get(audio_url)
-    if response.status_code != 200:
-        raise Exception(f"Failed to download audio: {response.status_code}")
+    # Download and combine all audio segments
+    logger.info("Downloading and combining audio segments...")
+    combined_audio = AudioSegment.empty()
+    for i, url in enumerate(audio_urls):
+        logger.info(f"Downloading audio segment {i+1}/{len(audio_urls)}")
+        response = requests.get(url)
+        if response.status_code != 200:
+            raise Exception(f"Failed to download audio segment {i+1}: {response.status_code}")
 
-    audio_format = audio_url.split(".")[-1].lower()
-    audio = AudioSegment.from_file(io.BytesIO(response.content), format=audio_format)
-    audio_duration = len(audio) / 1000  # milliseconds to seconds
+        audio_format = url.split(".")[-1].lower()
+        segment = AudioSegment.from_file(io.BytesIO(response.content), format=audio_format)
+        combined_audio += segment
 
+    # Save combined audio to a temporary file
+    logger.info("Saving combined audio to temporary file...")
+    with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
+        combined_audio.export(temp_file.name, format='mp3')
+        temp_filename = temp_file.name
+
+    # Upload combined audio to Cloudinary
+    logger.info("Uploading combined audio to Cloudinary...")
+    cloudinary_response = cloudinary.uploader.upload(
+        temp_filename,
+        resource_type="video",
+        folder="video-assembly",
+        public_id=f"{video_id}_audio"
+    )
+    os.remove(temp_filename)  # Clean up temporary file
+    audio_url = cloudinary_response['secure_url']
+    logger.info("Combined audio uploaded successfully")
+
+    # Calculate duration and timing
+    audio_duration = len(combined_audio) / 1000  # milliseconds to seconds
     duration_per_visual = audio_duration / len(visual_urls) if visual_urls else 10.0
 
     clips = []
@@ -97,28 +123,23 @@ async def create_video(video_id: str, audio_url: str, visual_urls: list, effects
             if transition_effect in transition_effects:
                 clip_params["transition"] = Transition(**{"in": transition_effect})
 
-
         clip = Clip(**clip_params)
         clips.append(clip)
 
     track = Track(clips=clips)
     timeline = Timeline(tracks=[track])
 
-    # Mix audio and background music if needed
-    if audio_url and background_music_url:
+    # Add the combined audio as soundtrack
+    timeline.soundtrack = Soundtrack(
+        src=audio_url,
+        effect="fadeInFadeOut"
+    )
+
+    # Add background music if provided
+    if background_music_url:
         mixed_audio_url = mix_audio(audio_url, background_music_url)
         timeline.soundtrack = Soundtrack(
             src=mixed_audio_url,
-            effect="fadeInFadeOut"
-        )
-    elif audio_url:
-        timeline.soundtrack = Soundtrack(
-            src=audio_url,
-            effect="fadeInFadeOut"
-        )
-    elif background_music_url:
-        timeline.soundtrack = Soundtrack(
-            src=background_music_url,
             effect="fadeInFadeOut"
         )
 
@@ -139,12 +160,12 @@ async def create_video(video_id: str, audio_url: str, visual_urls: list, effects
                 logger.info(f"Render status: {status}")
                 if status == "done":
                     shotstack_url = render_status['response']['url']
-                    # Tải video từ Shotstack và tải lên Cloudinary
+                    # Download video from Shotstack
                     video_response = requests.get(shotstack_url)
                     if video_response.status_code != 200:
                         raise Exception(f"Failed to download video from Shotstack: {video_response.status_code}")
 
-                    # Tải video lên Cloudinary
+                    # Upload to Cloudinary
                     cloudinary_response = cloudinary.uploader.upload(
                         io.BytesIO(video_response.content),
                         resource_type="video",

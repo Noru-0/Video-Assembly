@@ -2,12 +2,10 @@ import json
 import requests
 from typing import List, Dict
 import os
-from dotenv import load_dotenv
-from pydub import AudioSegment
-import tempfile
-import cloudinary
-import cloudinary.uploader
 import logging 
+import tempfile
+from pydub import AudioSegment
+import io
 
 # Configure logging
 logging.basicConfig(
@@ -15,16 +13,6 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-# Load environment variables
-load_dotenv()
-
-# Configure Cloudinary
-cloudinary.config(
-    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
-    api_key=os.getenv('CLOUDINARY_API_KEY'),
-    api_secret=os.getenv('CLOUDINARY_API_SECRET')
-)
 
 API_BASE_URL = "https://tkpm.up.railway.app"
 
@@ -90,59 +78,78 @@ def load_script_data(file_path: str) -> Dict:
 def download_audio(url: str) -> AudioSegment:
     """Download and load an audio file."""
     response = requests.get(url)
-    with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
-        temp_file.write(response.content)
-        return AudioSegment.from_mp3(temp_file.name)
+    if response.status_code != 200:
+        raise Exception(f"Failed to download audio: {response.status_code}")
+    
+    audio_format = url.split(".")[-1].lower()
+    return AudioSegment.from_file(io.BytesIO(response.content), format=audio_format)
 
 def combine_audio_files(audio_urls: List[str]) -> str:
-    """Combine multiple audio files into one and return the URL."""
+    """Combine multiple audio files into one and return the path to the combined file."""
+    logger.info("Starting audio combination process")
+    
     # Download and combine all audio segments
     combined = AudioSegment.empty()
-    for url in audio_urls:
+    for i, url in enumerate(audio_urls):
+        logger.info(f"Downloading audio segment {i+1}/{len(audio_urls)}")
         segment = download_audio(url)
         combined += segment
     
     # Save the combined audio to a temporary file
+    logger.info("Saving combined audio to temporary file")
     with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as temp_file:
         combined.export(temp_file.name, format='mp3')
         return temp_file.name
 
-def upload_to_cloudinary(file_path: str) -> str:
-    """Upload a file to Cloudinary and return the URL."""
-    result = cloudinary.uploader.upload(
-        file_path,
-        resource_type="video",  # Use video resource type for audio files
-        folder="video-assembly"
-    )
-    return result['secure_url']
-
 def create_video_assembly_request(script_data: Dict) -> Dict:
     """Create the video assembly request payload."""
-    # Extract all scene images
-    visual_urls = [
-        scene["cloudinary_url"] 
-        for scene in script_data["image_data"]["scene_images"]
-    ]
-    
-    # Get all audio URLs and combine them
-    audio_urls = [
-        voiceover["cloudinary_url"]
-        for voiceover in script_data["voice_data"]["scene_voiceovers"]
-    ]
-    
-    # Combine all audio files
-    combined_audio_path = combine_audio_files(audio_urls)
-    
-    # Upload combined audio to Cloudinary
-    audio_url = upload_to_cloudinary(combined_audio_path)
-    
-    # Create the request payload
-    return {
-        "visual_urls": visual_urls,
-        "audio_url": audio_url,
-        "effects": ["fade"],  # Using fade effect for transitions
-        "background_music_url": None  # Optional: Add background music URL if desired
-    }
+    try:
+        logger.info("Creating video assembly request payload")
+        
+        # Extract all scene images
+        visual_urls = []
+        for scene in script_data["image_data"]["scene_images"]:
+            if "cloudinary_url" not in scene:
+                logger.warning(f"Scene missing cloudinary_url: {scene}")
+                continue
+            visual_urls.append(scene["cloudinary_url"])
+        
+        if not visual_urls:
+            raise ValueError("No valid image URLs found in script data")
+        
+        logger.info(f"Found {len(visual_urls)} valid image URLs")
+        
+        # Get all audio URLs
+        audio_urls = []
+        for voiceover in script_data["voice_data"]["scene_voiceovers"]:
+            if "cloudinary_url" not in voiceover:
+                logger.warning(f"Voiceover missing cloudinary_url: {voiceover}")
+                continue
+            audio_urls.append(voiceover["cloudinary_url"])
+        
+        if not audio_urls:
+            raise ValueError("No valid audio URLs found in script data")
+        
+        logger.info(f"Found {len(audio_urls)} valid audio URLs")
+        
+        # Create the request payload
+        payload = {
+            "visual_urls": visual_urls,
+            "audio_urls": audio_urls,  # Send all audio URLs
+            "effects": ["fade"],  # Using fade effect for transitions
+            "background_music_url": None,  # Optional: Add background music URL if desired
+            "metadata": {
+                "num_scenes": len(visual_urls),
+                "num_audio_segments": len(audio_urls)
+            }
+        }
+        
+        logger.info(f"Created request payload with {len(visual_urls)} scenes and {len(audio_urls)} audio segments")
+        return payload
+        
+    except Exception as e:
+        logger.error(f"Error creating video assembly request: {str(e)}")
+        raise
 
 def assemble_video(script_path: str) -> Dict:
     """Main function to assemble the video."""

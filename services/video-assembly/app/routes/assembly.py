@@ -7,7 +7,7 @@ from uuid import uuid4
 router = APIRouter()  # Create a new router for this module
 
 class VideoRequest(BaseModel):
-    audio_url: HttpUrl
+    audio_urls: List[HttpUrl]
     visual_urls: List[HttpUrl]
     effects: Optional[List[str]] = ["fade"]
     transitions: Optional[List[str]] = ["fade"]
@@ -24,7 +24,7 @@ async def assemble_video(request: VideoRequest):
         video_id = str(uuid4())
         video_url, duration = await create_video(
             video_id,
-            request.audio_url,
+            request.audio_urls,
             request.visual_urls,
             request.effects,
             request.transitions,

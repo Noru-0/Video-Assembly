@@ -1,0 +1,186 @@
+{
+  "_id": {
+    "$oid": "6820d6ac6c8bad8cef012acd"
+  },
+  "job_id": "a6e17227-0ad4-4964-bc6c-7fa3cafc97f1",
+  "collection_id": "6820d6581beae5d577710ce8",
+  "title": "Generated Script",
+  "status": "READY",
+  "created_at": {
+    "$date": "2025-05-11T16:56:12.311Z"
+  },
+  "updated_at": {
+    "$date": "2025-05-11T16:56:12.371Z"
+  },
+  "image_data": {
+    "script_id": "a6e17227-0ad4-4964-bc6c-7fa3cafc97f1",
+    "collection_id": "6820d6581beae5d577710ce8",
+    "scene_images": [
+      {
+        "scene_id": "scene1",
+        "cloudinary_url": "https://res.cloudinary.com/dddhsnmiw/image/upload/v1746982510/35f4b751-6547-4243-ba92-a88a50ee9b6c.png"
+      },
+      {
+        "scene_id": "scene2",
+        "cloudinary_url": "https://res.cloudinary.com/dddhsnmiw/image/upload/v1746982518/3da3a734-33f6-4898-85bb-7bd5721fadf2.png"
+      },
+      {
+        "scene_id": "scene3",
+        "cloudinary_url": "https://res.cloudinary.com/dddhsnmiw/image/upload/v1746982526/7c6b1995-346b-4e52-99cc-b4d141a62496.png"
+      },
+      {
+        "scene_id": "scene4",
+        "cloudinary_url": "https://res.cloudinary.com/dddhsnmiw/image/upload/v1746982535/20d80a91-e6a0-4ca8-9dcd-f10ed6b49654.png"
+      },
+      {
+        "scene_id": "scene5",
+        "cloudinary_url": "https://res.cloudinary.com/dddhsnmiw/image/upload/v1746982543/341e56c1-9a13-4558-9595-9b89f24873c1.png"
+      },
+      {
+        "scene_id": "scene6",
+        "cloudinary_url": "https://res.cloudinary.com/dddhsnmiw/image/upload/v1746982553/f05c9549-1a00-4665-aa3d-120686471930.png"
+      },
+      {
+        "scene_id": "scene7",
+        "cloudinary_url": "https://res.cloudinary.com/dddhsnmiw/image/upload/v1746982562/cf90e2cd-f35a-4541-b03f-550f6c33e2a8.png"
+      },
+      {
+        "scene_id": "scene8",
+        "cloudinary_url": "https://res.cloudinary.com/dddhsnmiw/image/upload/v1746982572/b53c1443-e77d-4d65-930f-2172a0c6145a.png"
+      }
+    ]
+  },
+  "script": {
+    "_id": "a6e17227-0ad4-4964-bc6c-7fa3cafc97f1",
+    "collection_id": "6820d6581beae5d577710ce8",
+    "scenes": [
+      {
+        "scene_id": "scene1",
+        "time": "00:00-00:10",
+        "script": "In the agricultural heartlands of the Indian subcontinent and Southeast Asia, a powerhouse thrives: the water buffalo. But its influence extends far beyond its origins.",
+        "visual": "A sweeping, photorealistic shot of a herd of water buffalo grazing peacefully in a lush, green rice paddy under a bright, sunny sky. The camera slowly pans across the scene.",
+        "voiceover": true
+      },
+      {
+        "scene_id": "scene2",
+        "time": "00:10-00:20",
+        "script": "Two primary types exist: the river buffalo, known for its presence from the Balkans to Italy, and the swamp buffalo, dominant across Southeast Asia and parts of China.",
+        "visual": "Split screen. Left side: A photorealistic image of a river buffalo, highlighting its physique. Right side: A photorealistic image of a swamp buffalo, emphasizing its distinct characteristics. A subtle transition effect between the two.",
+        "voiceover": true
+      },
+      {
+        "scene_id": "scene3",
+        "time": "00:20-00:30",
+        "script": "Historically, these bovids played a key role in trade, with evidence of their presence in Mesopotamia dating back to 2500 BC. Their adaptability has made them invaluable.",
+        "visual": "A photorealistic re-creation of an ancient Mesopotamian scene, with water buffalo being traded. The camera zooms in on a detailed depiction of a scribe recording the transaction.",
+        "voiceover": true
+      },
+      {
+        "scene_id": "scene4",
+        "time": "00:30-00:40",
+        "script": "Water buffalo are uniquely suited for tilling rice fields, and their milk surpasses dairy cattle in fat and protein content. Their versatility is unmatched.",
+        "visual": "A montage of images. First, a water buffalo plowing a rice field. Second, close-up shot of water buffalo milk being poured. Third, diverse dairy products made with water buffalo milk.",
+        "voiceover": true
+      },
+      {
+        "scene_id": "scene5",
+        "time": "00:40-00:50",
+        "script": "Beyond their utility, water buffalo are deeply intertwined with cultures. From the Moh juj fighting festivals in Assam to the Pulilan Carabao Festival in the Philippines, they represent strength and resilience.",
+        "visual": "A fast-paced montage showcasing various cultural events involving water buffalo. Examples: The Moh juj fighting festival, the Pulilan Carabao Festival, and Kambala races.",
+        "voiceover": true
+      },
+      {
+        "scene_id": "scene6",
+        "time": "00:50-01:00",
+        "script": "Modern research focuses on genetics and reproduction, including cloning and in-vitro fertilization, highlighting their potential in the future. Their role in conservation is also being explored.",
+        "visual": "A series of images representing the research. A laboratory setting with scientists working on genetic samples. A water buffalo calf in a lab. Water buffalo grazing in a conservation area.",
+        "voiceover": true
+      },
+      {
+        "scene_id": "scene7",
+        "time": "01:00-01:10",
+        "script": "As the global population approaches 200 million, the water buffalo continues to be an essential asset, providing food, labor, and cultural significance across the globe.",
+        "visual": "A sweeping shot of diverse landscapes where water buffalo thrive: rice paddies, grasslands, and muddy terrains. The camera slowly zooms out, showing the geographical spread.",
+        "voiceover": true
+      },
+      {
+        "scene_id": "scene8",
+        "time": "01:10-01:20",
+        "script": "From ancient trade routes to modern research, the water buffalo's story is a testament to its enduring value and adaptability, securing its place in both history and the future.",
+        "visual": "A final, impactful image. A water buffalo standing proudly against the backdrop of a vibrant sunset, symbolizing its enduring legacy.",
+        "voiceover": true
+      }
+    ],
+    "metadata": {
+      "title": "The Enduring Legacy of the Water Buffalo",
+      "duration": "Short (1-2 mins)",
+      "style": "Narrative",
+      "target_audience": "Professionals",
+      "voice": "Wavenet-D",
+      "visual_style": "Photorealistic",
+      "language": "English"
+    }
+  },
+  "voice_data": {
+    "script_id": "a6e17227-0ad4-4964-bc6c-7fa3cafc97f1",
+    "collection_id": "6820d6581beae5d577710ce8",
+    "scene_voiceovers": [
+      {
+        "scene_id": "scene1",
+        "voice_id": "55083500-5c7e-41fe-b42a-1ce3a90fdfc8",
+        "audio_url": "/static/audio/55083500-5c7e-41fe-b42a-1ce3a90fdfc8.mp3",
+        "cloudinary_url": "https://res.cloudinary.com/djupm4v0l/video/upload/v1746982502/voice-synthesis/55083500-5c7e-41fe-b42a-1ce3a90fdfc8_kbayou.mp3",
+        "duration": 10.968
+      },
+      {
+        "scene_id": "scene2",
+        "voice_id": "75678d92-2b7c-43ae-9518-d348e0c16f1e",
+        "audio_url": "/static/audio/75678d92-2b7c-43ae-9518-d348e0c16f1e.mp3",
+        "cloudinary_url": "https://res.cloudinary.com/djupm4v0l/video/upload/v1746982504/voice-synthesis/75678d92-2b7c-43ae-9518-d348e0c16f1e_huzni3.mp3",
+        "duration": 10.632
+      },
+      {
+        "scene_id": "scene3",
+        "voice_id": "bea734fd-b726-449a-b3d2-35b1803d09dd",
+        "audio_url": "/static/audio/bea734fd-b726-449a-b3d2-35b1803d09dd.mp3",
+        "cloudinary_url": "https://res.cloudinary.com/djupm4v0l/video/upload/v1746982506/voice-synthesis/bea734fd-b726-449a-b3d2-35b1803d09dd_tx5gsi.mp3",
+        "duration": 11.568
+      },
+      {
+        "scene_id": "scene4",
+        "voice_id": "d81220c3-3498-4f42-935b-a66fb927161f",
+        "audio_url": "/static/audio/d81220c3-3498-4f42-935b-a66fb927161f.mp3",
+        "cloudinary_url": "https://res.cloudinary.com/djupm4v0l/video/upload/v1746982508/voice-synthesis/d81220c3-3498-4f42-935b-a66fb927161f_vb7ax6.mp3",
+        "duration": 9.768
+      },
+      {
+        "scene_id": "scene5",
+        "voice_id": "36f2cfa6-e698-40af-aa87-d5bb53bf3dca",
+        "audio_url": "/static/audio/36f2cfa6-e698-40af-aa87-d5bb53bf3dca.mp3",
+        "cloudinary_url": "https://res.cloudinary.com/djupm4v0l/video/upload/v1746982511/voice-synthesis/36f2cfa6-e698-40af-aa87-d5bb53bf3dca_bkt4e8.mp3",
+        "duration": 13.344
+      },
+      {
+        "scene_id": "scene6",
+        "voice_id": "86b82760-bf2d-41fb-8f76-e80dd435b0f4",
+        "audio_url": "/static/audio/86b82760-bf2d-41fb-8f76-e80dd435b0f4.mp3",
+        "cloudinary_url": "https://res.cloudinary.com/djupm4v0l/video/upload/v1746982512/voice-synthesis/86b82760-bf2d-41fb-8f76-e80dd435b0f4_yblizu.mp3",
+        "duration": 12.288
+      },
+      {
+        "scene_id": "scene7",
+        "voice_id": "540dee7c-76e3-4a31-bfd4-09dad30ec9b6",
+        "audio_url": "/static/audio/540dee7c-76e3-4a31-bfd4-09dad30ec9b6.mp3",
+        "cloudinary_url": "https://res.cloudinary.com/djupm4v0l/video/upload/v1746982514/voice-synthesis/540dee7c-76e3-4a31-bfd4-09dad30ec9b6_cqg7lf.mp3",
+        "duration": 11.064
+      },
+      {
+        "scene_id": "scene8",
+        "voice_id": "82db461d-c0a1-4ccb-92d8-df59da117d7a",
+        "audio_url": "/static/audio/82db461d-c0a1-4ccb-92d8-df59da117d7a.mp3",
+        "cloudinary_url": "https://res.cloudinary.com/djupm4v0l/video/upload/v1746982515/voice-synthesis/82db461d-c0a1-4ccb-92d8-df59da117d7a_iciotf.mp3",
+        "duration": 10.896
+      }
+    ]
+  }
+}

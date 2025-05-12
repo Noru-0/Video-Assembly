@@ -68,7 +68,7 @@ async def create_video(video_id: str, audio_urls: list, visual_urls: list, effec
     for i, url in enumerate(audio_urls):
         logger.info(f"Downloading audio segment {i+1}/{len(audio_urls)}")
         response = requests.get(url)
-    if response.status_code != 200:
+        if response.status_code != 200:
             raise Exception(f"Failed to download audio segment {i+1}: {response.status_code}")
 
         audio_format = url.split(".")[-1].lower()

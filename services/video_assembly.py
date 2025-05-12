@@ -69,7 +69,7 @@ def load_script_data(file_path: str) -> Dict:
                 error_msg = f"Invalid JSON format in file: {str(e)}"
                 logger.error(error_msg)
                 raise json.JSONDecodeError(error_msg, e.doc, e.pos)
-                
+            
     except Exception as e:
         error_msg = f"Unexpected error loading script: {str(e)}"
         logger.error(error_msg)
@@ -131,7 +131,7 @@ def create_video_assembly_request(script_data: Dict) -> Dict:
             raise ValueError("No valid audio URLs found in script data")
         
         logger.info(f"Found {len(audio_urls)} valid audio URLs")
-        
+    
         # Create the request payload
         payload = {
             "visual_urls": visual_urls,
@@ -177,6 +177,7 @@ def assemble_video(script_path: str) -> Dict:
         else:
             logger.error(f"API request failed with status {response.status_code}: {response.text}")
             raise Exception(f"Failed to create video: {response.text}")
+            
     except Exception as e:
         logger.error(f"Error in assemble_video: {str(e)}")
         raise
@@ -198,4 +199,4 @@ if __name__ == "__main__":
         
     except Exception as e:
         logger.error(f"Fatal error: {str(e)}")
-        print(f"Error: {str(e)}") 
+        print(f"Error: {str(e)}")

@@ -1,7 +1,7 @@
 requests==2.31.0
 python-dotenv==1.0.0
 pydub==0.25.1
-cloudinary==1.41.0
+cloudinary==1.41.0 
 fastapi==0.115.0
 uvicorn==0.30.6
 shotstack-sdk==0.2.8
